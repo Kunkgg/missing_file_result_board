@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Missing File Check Results</title>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Element Plus CSS -->
+<link href="https://unpkg.com/element-plus/dist/index.css" rel="stylesheet"/>
+<!-- Vue 3 and Element Plus JS -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/element-plus"></script>
+<script src="https://unpkg.com/@element-plus/icons-vue"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+<div class="min-h-screen p-6" id="app">
+<!-- BEGIN: Header Section -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 bg-white p-4 rounded-lg shadow-sm border border-gray-100" data-purpose="page-header">
+<div class="flex items-center gap-3">
+<div class="bg-blue-600 p-2 rounded">
+<el-icon class="text-white text-2xl"><files></files></el-icon>
+</div>
+<div>
+<h1 class="text-xl font-bold flex items-center gap-2">
+            缺失文件检查结果汇总 <span class="text-gray-400 font-normal text-lg">Missing File Check Results</span>
+</h1>
+</div>
+</div>
+<div class="flex items-center gap-12 mt-4 md:mt-0">
+<div class="text-center">
+<p class="text-[10px] text-gray-400 uppercase font-extrabold tracking-wider">Total Groups</p>
+<p class="text-2xl font-bold leading-none mt-1">1,284</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-gray-400 uppercase font-extrabold tracking-wider">Total Issues</p>
+<p class="text-2xl font-bold text-red-500 leading-none mt-1">42</p>
+</div>
+<div class="w-48">
+<div class="flex justify-between mb-1">
+<span class="text-[10px] text-gray-400 uppercase font-extrabold tracking-wider">Scan Progress</span>
+<span class="text-xs font-bold text-blue-600">92%</span>
+</div>
+<el-progress :percentage="92" :show-text="false" color="#2563eb" stroke-width="8"></el-progress>
+</div>
+</div>
+</header>
+<!-- END: Header Section -->
+<!-- BEGIN: Filter Bar -->
+<section class="mb-6" data-purpose="filter-bar">
+<el-card class="border-gray-100" shadow="never">
+<el-form :inline="true" :model="filters" class="flex flex-wrap items-end gap-y-4">
+<el-form-item class="!mb-0 !mr-4" label="SEARCH VERSION">
+<el-input class="!w-32" placeholder="e.g. 26b" v-model="filters.searchVersion"></el-input>
+</el-form-item>
+<el-form-item class="!mb-0 !mr-4" label="C-VERSION">
+<el-input class="!w-32" placeholder="e.g. c01" v-model="filters.cVersion"></el-input>
+</el-form-item>
+<el-form-item class="!mb-0 !mr-4" label="SOURCE TYPE">
+<el-select class="!w-36" placeholder="All Types" v-model="filters.sourceType">
+<el-option label="All Types" value=""></el-option>
+<el-option label="Self Dev" value="self_dev"></el-option>
+</el-select>
+</el-form-item>
+<el-form-item class="!mb-0 !mr-4" label="GROUP NAME">
+<el-input class="!w-48" placeholder="Search groups..." v-model="filters.groupName"></el-input>
+</el-form-item>
+<el-form-item class="!mb-0 !mr-4" label="LANGUAGE">
+<el-select class="!w-36" placeholder="All Languages" v-model="filters.language">
+<el-option label="All Languages" value=""></el-option>
+<el-option label="C-Like" value="clike"></el-option>
+<el-option label="Go" value="golang"></el-option>
+<el-option label="Python" value="python"></el-option>
+</el-select>
+</el-form-item>
+<el-form-item class="!mb-0 !mr-6">
+<el-checkbox label="Only Show Issues" v-model="filters.onlyIssues"></el-checkbox>
+</el-form-item>
+<el-form-item class="!mb-0 ml-auto">
+<el-button @click="handleApply" type="primary">Apply</el-button>
+<el-button @click="handleReset">Reset</el-button>
+</el-form-item>
+</el-form>
+</el-card>
+</section>
+<!-- END: Filter Bar -->
+<!-- BEGIN: Results List -->
+<main class="space-y-4" data-purpose="results-list">
+<!-- Group Card 1: Issues Detected -->
+<el-card class="group-card border-l-4 border-l-red-500 overflow-hidden" shadow="hover">
+<div class="flex items-center justify-between py-2 border-b border-gray-50 mb-4" slot="header">
+<div class="flex items-center gap-6">
+<div class="text-center px-4 border-r border-gray-100 min-w-[80px]">
+<p class="text-[10px] text-red-500 font-extrabold uppercase">ID</p>
+<p class="text-xl font-bold text-red-600">197</p>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="text-lg font-bold">hert</h3>
+<el-tag effect="light" size="small" type="info">clike</el-tag>
+<el-tag effect="plain" size="small" type="primary">GitLab</el-tag>
+</div>
+<div class="text-sm text-gray-500 mt-1 whitespace-nowrap">
+<span>Version: <strong class="text-gray-700">26b/c01</strong></span>
+<span class="ml-4">Product: <strong class="text-gray-700">InternalTools</strong></span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<el-tag class="flex items-center gap-1" effect="dark" type="danger">
+<el-icon><warning></warning></el-icon> Issues Detected
+            </el-tag>
+<el-icon class="text-gray-400 cursor-pointer"><arrow-up></arrow-up></el-icon>
+</div>
+</div>
+<!-- Tool Summaries Grid -->
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+<!-- CODESTYLE -->
+<div class="tool-summary bg-red-50/30 border border-red-100 p-3 rounded-lg flex flex-col justify-between">
+<div class="flex justify-between items-center mb-3">
+<span class="text-[11px] font-extrabold text-red-700 uppercase flex items-center gap-1 truncate mr-2">
+<el-icon><document></document></el-icon> CODESTYLE
+              </span>
+<el-tag class="!px-1 !h-5 !leading-4" effect="plain" size="small" type="success">Completed</el-tag>
+</div>
+<div class="flex justify-between text-center px-1">
+<div class="flex-1">
+<p class="text-[10px] text-gray-400 uppercase font-bold">Missed</p>
+<p class="text-xl font-bold text-red-600">12</p>
+</div>
+<div class="w-px h-8 bg-gray-100 self-center mx-2"></div>
+<div class="flex-1">
+<p class="text-[10px] text-gray-400 uppercase font-bold">Failed</p>
+<p class="text-xl font-bold text-red-600">22</p>
+</div>
+</div>
+<div class="mt-3 flex justify-between items-center text-[10px] text-gray-400 border-t border-red-50/50 pt-2">
+<span>12:34:00</span>
+<el-icon class="text-blue-500 cursor-pointer hover:text-blue-700"><link/></el-icon>
+</div>
+</div>
+<!-- CODECHECK -->
+<div class="tool-summary bg-red-50/30 border border-red-100 p-3 rounded-lg flex flex-col justify-between">
+<div class="flex justify-between items-center mb-3">
+<span class="text-[11px] font-extrabold text-red-700 uppercase flex items-center gap-1 truncate mr-2">
+<el-icon><circle-check></circle-check></el-icon> CODECHECK
+              </span>
+<el-tag class="!px-1 !h-5 !leading-4" effect="plain" size="small" type="success">Completed</el-tag>
+</div>
+<div class="flex justify-between text-center px-1">
+<div class="flex-1">
+<p class="text-[10px] text-gray-400 uppercase font-bold">Missed</p>
+<p class="text-xl font-bold text-red-600">12</p>
+</div>
+<div class="w-px h-8 bg-gray-100 self-center mx-2"></div>
+<div class="flex-1">
+<p class="text-[10px] text-gray-400 uppercase font-bold">Failed</p>
+<p class="text-xl font-bold text-gray-800">0</p>
+</div>
+</div>
+<div class="mt-3 flex justify-between items-center text-[10px] text-gray-400 border-t border-red-50/50 pt-2">
+<span>12:35:12</span>
+<el-icon class="text-blue-500 cursor-pointer hover:text-blue-700"><link/></el-icon>
+</div>
+</div>
+<!-- SEC_CHECK -->
+<div class="tool-summary bg-red-50/30 border border-red-100 p-3 rounded-lg flex flex-col justify-between">
+<div class="flex justify-between items-center mb-3">
+<span class="text-[11px] font-extrabold text-red-700 uppercase flex items-center gap-1 truncate mr-2">
+<el-icon><shield-check></shield-check></el-icon> SEC_CHECK
+              </span>
+<el-tag class="!px-1 !h-5 !leading-4" effect="plain" size="small" type="success">Completed</el-tag>
+</div>
+<div class="flex justify-between text-center px-1">
+<div class="flex-1">
+<p class="text-[10px] text-gray-400 uppercase font-bold">Missed</p>
+<p class="text-xl font-bold text-red-600">12</p>
+</div>
+<div class="w-px h-8 bg-gray-100 self-center mx-2"></div>
+<div class="flex-1">
+<p class="text-[10px] text-gray-400 uppercase font-bold">Failed</p>
+<p class="text-xl font-bold text-gray-800">0</p>
+</div>
+</div>
+<div class="mt-3 flex justify-between items-center text-[10px] text-gray-400 border-t border-red-50/50 pt-2">
+<span>12:36:05</span>
+<el-icon class="text-blue-500 cursor-pointer hover:text-blue-700"><link/></el-icon>
+</div>
+</div>
+<!-- DB_CHECK -->
+<div class="tool-summary bg-gray-50 border border-gray-100 p-3 rounded-lg flex flex-col justify-between">
+<div class="flex justify-between items-center mb-3">
+<span class="text-[11px] font-extrabold text-gray-600 uppercase flex items-center gap-1 truncate mr-2">
+<el-icon><data-analysis></data-analysis></el-icon> DB_CHECK
+              </span>
+<el-tag class="animate-pulse !px-1 !h-5 !leading-4" effect="plain" size="small" type="primary">Running</el-tag>
+</div>
+<div class="flex items-center justify-center h-10">
+<p class="text-gray-400 italic text-xs">Processing...</p>
+</div>
+<div class="mt-3 flex justify-between items-center text-[10px] text-gray-400 border-t border-gray-100 pt-2">
+<span>-</span>
+<el-icon class="text-gray-300"><link/></el-icon>
+</div>
+</div>
+<!-- UNIT_TEST -->
+<div class="tool-summary bg-gray-50 border border-gray-100 p-3 rounded-lg flex flex-col justify-between">
+<div class="flex justify-between items-center mb-3">
+<span class="text-[11px] font-extrabold text-gray-600 uppercase flex items-center gap-1 truncate mr-2">
+<el-icon><box></box></el-icon> UNIT_TEST
+              </span>
+<el-tag class="!px-1 !h-5 !leading-4" effect="plain" size="small" type="success">Completed</el-tag>
+</div>
+<div class="flex justify-between text-center px-1">
+<div class="flex-1">
+<p class="text-[10px] text-gray-400 uppercase font-bold">Missed</p>
+<p class="text-xl font-bold text-gray-800">0</p>
+</div>
+<div class="w-px h-8 bg-gray-100 self-center mx-2"></div>
+<div class="flex-1">
+<p class="text-[10px] text-gray-400 uppercase font-bold">Failed</p>
+<p class="text-xl font-bold text-gray-800">0</p>
+</div>
+</div>
+<div class="mt-3 flex justify-between items-center text-[10px] text-gray-400 border-t border-gray-100 pt-2">
+<span>12:40:55</span>
+<el-icon class="text-blue-500 cursor-pointer hover:text-blue-700"><link/></el-icon>
+</div>
+</div>
+</div>
+</el-card>
+<!-- Group Card 2: All Passed -->
+<el-card class="group-card border-l-4 border-l-gray-300" shadow="hover">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-6">
+<div class="text-center px-4 border-r border-gray-100 min-w-[80px]">
+<p class="text-[10px] text-gray-400 font-extrabold uppercase">ID</p>
+<p class="text-xl font-bold text-gray-600">215</p>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="text-lg font-bold">api-gateway-service</h3>
+<el-tag effect="light" size="small" type="info">golang</el-tag>
+<el-tag effect="plain" size="small" type="info">Gerrit</el-tag>
+</div>
+<div class="text-sm text-gray-500 mt-1 whitespace-nowrap">
+<span>Version: <strong class="text-gray-700">26b/c05</strong></span>
+<span class="ml-4">Product: <strong class="text-gray-700">CloudPlatform</strong></span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<el-tag class="flex items-center gap-1" effect="light" type="success">
+<el-icon><circle-check></circle-check></el-icon> All Passed
+            </el-tag>
+<el-icon class="text-gray-400 cursor-pointer"><arrow-down></arrow-down></el-icon>
+</div>
+</div>
+</el-card>
+<!-- Group Card 3: System Failure -->
+<el-card class="group-card border-l-4 border-l-orange-400 overflow-hidden" shadow="hover">
+<div class="flex items-center justify-between py-2 border-b border-gray-50 mb-4" slot="header">
+<div class="flex items-center gap-6">
+<div class="text-center px-4 border-r border-gray-100 min-w-[80px]">
+<p class="text-[10px] text-orange-400 font-extrabold uppercase">ID</p>
+<p class="text-xl font-bold text-orange-600">442</p>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="text-lg font-bold">data-processor-v3</h3>
+<el-tag effect="light" size="small" type="info">python</el-tag>
+<el-tag effect="plain" size="small" type="primary">GitLab</el-tag>
+</div>
+<div class="text-sm text-gray-500 mt-1 whitespace-nowrap">
+<span>Version: <strong class="text-gray-700">27a/main</strong></span>
+<span class="ml-4">Product: <strong class="text-gray-700">BigData</strong></span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<el-tag class="flex items-center gap-1 bg-orange-50 border-orange-100 text-orange-700" effect="light" type="warning">
+<el-icon><info-filled></info-filled></el-icon> System Failure Detected
+            </el-tag>
+<el-icon class="text-gray-400 cursor-pointer"><arrow-up></arrow-up></el-icon>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+<!-- STATIC_SCAN Failed -->
+<div class="tool-summary bg-red-50 border border-red-100 p-3 rounded-lg flex flex-col justify-between min-h-[110px]">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[11px] font-extrabold text-red-700 uppercase flex items-center gap-1 truncate mr-2">
+<el-icon><failed></failed></el-icon> STATIC_SCAN
+              </span>
+<el-tag class="!px-1 !h-5 !leading-4" effect="dark" size="small" type="danger">FAILED</el-tag>
+</div>
+<div class="flex-grow flex items-center justify-center">
+<p class="text-red-500 font-bold text-xs text-center leading-tight">Execution Timeout</p>
+</div>
+<div class="mt-2 flex justify-between items-center text-[10px] text-gray-400 border-t border-red-100/50 pt-2">
+<span>09:15:22</span>
+<span class="text-blue-600 font-bold underline cursor-pointer hover:text-blue-800">Log</span>
+</div>
+</div>
+<!-- DEPENDENCY -->
+<div class="tool-summary bg-white border border-gray-100 p-3 rounded-lg flex flex-col justify-between min-h-[110px]">
+<div class="flex justify-between items-center mb-3">
+<span class="text-[11px] font-extrabold text-gray-600 uppercase flex items-center gap-1 truncate mr-2">
+<el-icon><connection></connection></el-icon> DEPENDENCY
+              </span>
+<el-tag class="!px-1 !h-5 !leading-4" effect="plain" size="small" type="success">Completed</el-tag>
+</div>
+<div class="flex justify-between text-center px-1">
+<div class="flex-1">
+<p class="text-[10px] text-gray-400 uppercase font-extrabold">Remapped</p>
+<p class="text-xl font-bold text-gray-800">5</p>
+</div>
+<div class="w-px h-8 bg-gray-100 self-center mx-2"></div>
+<div class="flex-1">
+<p class="text-[10px] text-gray-400 uppercase font-extrabold">Shielded</p>
+<p class="text-xl font-bold text-gray-800">1</p>
+</div>
+</div>
+<div class="mt-3 flex justify-between items-center text-[10px] text-gray-400 border-t border-gray-50 pt-2">
+<span>09:20:10</span>
+<el-icon class="text-blue-500 cursor-pointer hover:text-blue-700"><link/></el-icon>
+</div>
+</div>
+<!-- COVERAGE No Data -->
+<div class="tool-summary bg-gray-50/50 border border-gray-100 border-dashed p-3 rounded-lg flex flex-col min-h-[110px]">
+<div class="mb-4">
+<span class="text-[11px] font-extrabold text-gray-300 uppercase">COVERAGE</span>
+</div>
+<div class="flex-grow flex items-center justify-center">
+<p class="text-gray-300 italic text-[11px]">No Data</p>
+</div>
+</div>
+<!-- MUTATION No Data -->
+<div class="tool-summary bg-gray-50/50 border border-gray-100 border-dashed p-3 rounded-lg flex flex-col min-h-[110px]">
+<div class="mb-4">
+<span class="text-[11px] font-extrabold text-gray-300 uppercase">MUTATION</span>
+</div>
+<div class="flex-grow flex items-center justify-center">
+<p class="text-gray-300 italic text-[11px]">No Data</p>
+</div>
+</div>
+<!-- LICENSE No Data -->
+<div class="tool-summary bg-gray-50/50 border border-gray-100 border-dashed p-3 rounded-lg flex flex-col min-h-[110px]">
+<div class="mb-4">
+<span class="text-[11px] font-extrabold text-gray-300 uppercase">LICENSE</span>
+</div>
+<div class="flex-grow flex items-center justify-center">
+<p class="text-gray-300 italic text-[11px]">No Data</p>
+</div>
+</div>
+</div>
+</el-card>
+</main>
+<!-- END: Results List -->
+<!-- BEGIN: Pagination Section -->
+<footer class="mt-8 flex flex-col md:flex-row justify-between items-center bg-white p-4 rounded-lg border border-gray-100 shadow-sm" data-purpose="pagination">
+<div class="text-sm text-gray-500 mb-4 md:mb-0">
+        Showing 1-10 of 1,284 groups
+      </div>
+<el-pagination :page-size="10" :total="1284" background="" layout="prev, pager, next, jumper" v-model:current-page="currentPage"></el-pagination>
+</footer>
+<!-- END: Pagination Section -->
+</div>
+<style data-purpose="custom-styling">
+    /* Fix for Element Plus label styling in forms to match screenshot layout */
+    .el-form-item__label {
+      font-size: 10px !important;
+      font-weight: 800 !important;
+      color: #9ca3af !important;
+      margin-bottom: 2px !important;
+      display: block !important;
+      line-height: 1 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.05em !important;
+    }
+    
+    .el-form-item {
+      margin-right: 0 !important;
+    }
+
+    /* Custom shadow and transition for cards */
+    .group-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border-radius: 8px !important;
+    }
+    .group-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    /* Override Element Plus Pagination active state to match primary blue */
+    .el-pagination.is-background .el-pager li:not(.is-disabled).is-active {
+      background-color: #2563eb !important;
+    }
+    
+    .el-progress-bar__outer {
+      background-color: #e5e7eb !important;
+    }
+
+    .tool-summary {
+      transition: background-color 0.2s;
+    }
+    
+    .tool-summary:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+  </style>
+<script data-purpose="app-logic">
+    const { createApp, ref } = Vue;
+
+    const app = createApp({
+      setup() {
+        const filters = ref({
+          searchVersion: '',
+          cVersion: '',
+          sourceType: '',
+          groupName: '',
+          language: '',
+          onlyIssues: false
+        });
+
+        const currentPage = ref(1);
+
+        const handleApply = () => {
+          console.log('Filters applied:', filters.value);
+        };
+
+        const handleReset = () => {
+          filters.value = {
+            searchVersion: '',
+            cVersion: '',
+            sourceType: '',
+            groupName: '',
+            language: '',
+            onlyIssues: false
+          };
+        };
+
+        return {
+          filters,
+          currentPage,
+          handleApply,
+          handleReset
+        };
+      }
+    });
+
+    app.use(ElementPlus);
+    for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+      app.component(key, component);
+    }
+    app.mount('#app');
+  </script>
+</body></html>
